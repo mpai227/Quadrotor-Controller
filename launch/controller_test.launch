@@ -1,0 +1,72 @@
+<launch>
+  <param name="/use_sim_time" value="true"/>
+
+  <node pkg="tf"
+        type="static_transform_publisher"
+        name="static_transform_publisher"
+        output="screen"
+        args=" 0 0 0 0 0 0 1 world vicon 1000"/>
+
+  <node name="rviz"
+        pkg="rviz"
+        type="rviz"
+        output="screen"
+        args="-d $(find matlab_quadrotor_example)/rviz/simulation.rviz"/>
+
+  <!-- Vehicle Parameters -->
+  <rosparam file="$(find cmu_model_configs)/config/CMUQuad8.yaml"/>
+
+  <node pkg="quadrotor_simulator"
+        name="simulator"
+        type="quadrotor_simulator"
+        output="screen">
+    <param name="rate/sim" value="500"/>
+    <param name="rate/clock" value="100"/>
+    <param name="rate/odom" value="100"/>
+    <param name="rate/imu" value="100"/>
+    <param name="rate/cmd" value="200"/>
+    <param name="rate/voltage" value="1"/>
+
+    <param name="count" value="1"/>
+    <param name="name/robot1" value="alpha"/>
+
+    <param name="alpha/init/x" value="0.0"/>
+    <param name="alpha/init/y" value="0.0"/>
+    <param name="alpha/init/z" value="0.2"/>
+
+    <param name="frame_id/fixed" value="vicon"/>
+    <param name="frame_id/base" value="base"/>
+    <param name="frame_id/imu" value="imu"/>
+
+    <param name="input" value="pd"/>
+  </node>
+
+  <node pkg="quadrotor_controller"
+	name="controller"
+	type="quadrotor_controller"
+	output="screen">
+  <param name="mass" value="1.044"/>
+  <param name="Kp_lin_xy" value="6.8"/>
+  <param name="Kp_lin_z" value="13"/>
+  <param name="Kd_lin_xy" value="3.9"/>
+  <param name="Kd_lin_z" value="6"/>
+  <param name="Kp_ang_xy" value="177"/>
+  <param name="Kp_ang_z" value="60"/>
+  <param name="Kd_ang_xy" value="26"/>
+  <param name="Kd_ang_z" value="12"/>
+
+  <param name="sim_mode" value="true"/>
+
+  <remap from="controller/odom" to="alpha/odom"/>
+  <remap from="controller/pd_cmd" to="alpha/pd_cmd"/>
+
+  </node>
+
+  <group ns="alpha">
+    <include file="$(find cmu_quadrotor_mesh)/launch/CMUQuad8.launch">
+      <arg name="name" value="quad_red"/>
+      <arg name="color" value="red"/>
+    </include>
+  </group>
+
+</launch>
