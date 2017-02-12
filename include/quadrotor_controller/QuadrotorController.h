@@ -31,9 +31,6 @@ private:
   quadrotor_msgs::PDCommand pd_cmd;
   nav_msgs::Odometry odom;
 
-  //geometry_msgs::Point pos_odom;
-  //geometry_msgs::Quaternion att_odom;
-  //geometry_msgs::Vector3 vel_odom, ang_odom;
   gu::Quat quat_odom;
   gu::Vec3 pos_odom, att_odom, vel_odom, ang_odom, u_linear, pos_des, vel_des, ang_des, g_vector;
   gu::Mat33 Kp_lin, Kd_lin, Kp_ang, Kd_ang;
